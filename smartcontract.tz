@@ -1,0 +1,21 @@
+{ parameter
+    (or (or (or (int %decrement) (int %divide)) (or (int %increment) (int %modulo)))
+        (or (int %multiply) (unit %reset))) ;
+  storage int ;
+  code { UNPAIR ;
+         IF_LEFT
+           { IF_LEFT
+               { IF_LEFT
+                   { SWAP ; SUB }
+                   { SWAP ; EDIV ; IF_NONE { PUSH string "DIV by 0" ; FAILWITH } {} ; CAR } }
+               { IF_LEFT
+                   { ADD }
+                   { SWAP ;
+                     EDIV ;
+                     IF_NONE { PUSH string "MOD by 0" ; FAILWITH } {} ;
+                     CDR ;
+                     INT } } }
+           { IF_LEFT { SWAP ; MUL } { DROP 2 ; PUSH int 0 } } ;
+         NIL operation ;
+         PAIR } }
+
